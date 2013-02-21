@@ -16,7 +16,7 @@ module SpreeBraspag
         Rails.configuration.cache_classes ? require(c) : load(c)
       end
 
-      config.after_initialize do |app|
+      initializer "spree_braspag.register.payment_methods" do |app|
         app.config.spree.payment_methods += [Spree::PaymentMethod::BraspagBill]
       end
     end

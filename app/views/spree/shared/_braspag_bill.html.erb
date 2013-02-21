@@ -1,0 +1,4 @@
+<% if order.payment && order.payment.payment_method.kind_of?(Spree::PaymentMethod::BraspagBill) %>
+  <% transaction = order.payment.braspag_bill_transaction %>
+  <%= link_to 'Imprimir Boleto', transaction.url, target: '_blank' %>
+<% end %>

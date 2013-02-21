@@ -1,0 +1,11 @@
+<h3>Dados do boleto</h3>
+<% transaction = payment.braspag_bill_transaction %>
+
+<p>Vencimento: <%= transaction.expiration_date %></p>
+
+<p>Valor: <%= number_to_currency transaction.amount %></p>
+
+<p>Link: <%= link_to 'Abrir', transaction.url, target: '_blank' %></p>
+
+<p>Status Braspag: <%= transaction.status %></p>
+
