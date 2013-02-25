@@ -65,12 +65,12 @@ module Spree
                                               url: response[:url])
     end
 
-      def response_to_spree(response_value, response)
-        ActiveMerchant::Billing::Response.new(
-        response_value,
-        response
-        )
-      end
+    def response_to_spree(response_value, response)
+      ActiveMerchant::Billing::Response.new(
+      response_value,
+      response
+      )
+    end
 
   end
 end

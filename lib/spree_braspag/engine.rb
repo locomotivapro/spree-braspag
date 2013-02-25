@@ -15,10 +15,13 @@ module SpreeBraspag
       Dir.glob(File.join(File.dirname(__FILE__), '../../app/**/*_decorator*.rb')) do |c|
         Rails.configuration.cache_classes ? require(c) : load(c)
       end
+    end
 
-      initializer "spree_braspag.register.payment_methods" do |app|
-        app.config.spree.payment_methods += [Spree::PaymentMethod::BraspagBill]
-      end
+    initializer "spree_braspag.register.payment_methods" do |app|
+      app.config.spree.payment_methods += [
+                                            Spree::PaymentMethod::BraspagBill,
+                                            Spree::BraspagGateway
+                                          ]
     end
 
     config.to_prepare &method(:activate).to_proc
