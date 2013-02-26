@@ -6,12 +6,20 @@ module Spree
 
     has_many :payments, :as => :source, :class_name => "Spree::Payment"
 
-    validates :month, :year,:number_payments, :numericality => { :only_integer => true }
+    validates :month, :year,:number_payments, :numericality => { :only_integer => true }, :on => :create
     validates :number, :security_code, :holder, :presence => true, :on => :create
 
-    validates :payment_method, inclusion: { in: %w(Amex Visa Mastercard Diners Hipercard)}
+    validates :payment_method, inclusion: { in: %w(Amex Visa Mastercard Diners Hipercard)}, :on => :create
 
     before_save :format_expiration, :translate_payment_method
+
+    def can_capture?(payment)
+      ['checkout', 'pending'].include?(payment.state)
+    end
+
+    def can_void?(payment)
+      payment.state != 'void'
+    end
 
   private
 

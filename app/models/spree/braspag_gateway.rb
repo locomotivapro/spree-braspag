@@ -13,14 +13,6 @@ module Spree
       BraspagCreditcard
     end
 
-    def can_capture?(payment)
-      ['checkout', 'pending'].include?(payment.state)
-    end
-
-    def can_void?(payment)
-      payment.state != 'void'
-    end
-
     def capture(*args)
       ActiveMerchant::Billing::Response.new(true, "", {}, {})
     end

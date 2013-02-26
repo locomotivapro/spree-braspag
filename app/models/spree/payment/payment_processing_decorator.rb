@@ -11,7 +11,7 @@ Spree::Payment::Processing.module_eval do
           end
         end
       else
-        raise Core::GatewayError.new(I18n.t(:payment_processing_failed))
+        raise Spree::Core::GatewayError.new(I18n.t(:payment_processing_failed))
       end
     elsif payment_method && payment_method.kind_of?(Spree::PaymentMethod::BraspagBill)
       started_processing!
