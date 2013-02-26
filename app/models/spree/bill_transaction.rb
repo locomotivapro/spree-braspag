@@ -1,5 +1,5 @@
 module Spree
-  class BraspagBillTransaction < ActiveRecord::Base
+  class BillTransaction < Spree::BraspagTransaction
     attr_accessible :amount, :expiration_date, :message, :number, :return_code, :status, :url
 
     validates :amount, :expiration_date, :number, :return_code, :status, :url, presence: true

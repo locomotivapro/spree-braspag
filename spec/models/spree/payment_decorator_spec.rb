@@ -65,11 +65,11 @@ describe Spree::Payment do
       let(:payment) { Spree::Payment.new }
 
       it "should have a braspag_bill" do
-        payment.braspag_bill_transaction.should_not raise_error ActiveRecord::StatementInvalid
+        payment.bill_transaction.should_not raise_error ActiveRecord::StatementInvalid
       end
 
       it "should have a braspag_creditcard" do
-        payment.braspag_creditcard_transaction.should_not raise_error ActiveRecord::StatementInvalid
+        payment.creditcard_transaction.should_not raise_error ActiveRecord::StatementInvalid
       end
     end
 

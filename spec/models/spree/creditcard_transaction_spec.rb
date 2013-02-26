@@ -1,10 +1,10 @@
 require "spec_helper"
 
-describe Spree::BraspagCreditcardTransaction do
+describe Spree::CreditcardTransaction do
 
   context "validation" do
     it "validates :amount, :transaction_id, :return_code, :status" do
-      braspag_transaction = Spree::BraspagCreditcardTransaction.new
+      braspag_transaction = Spree::CreditcardTransaction.new
       braspag_transaction.should be_invalid
       braspag_transaction.amount = "100"
       braspag_transaction.should be_invalid
@@ -19,7 +19,7 @@ describe Spree::BraspagCreditcardTransaction do
 
 
   context "#associations" do
-    braspag_transaction = Spree::BraspagCreditcardTransaction.new
+    braspag_transaction = Spree::CreditcardTransaction.new
     it "should be able to access its payments" do
       lambda { braspag_transaction.payment }.should_not raise_error ActiveRecord::StatementInvalid
     end

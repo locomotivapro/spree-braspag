@@ -10,7 +10,7 @@ module Spree
     end
 
     def payment_source_class
-      BraspagCreditcard
+      BraspagSourcecard
     end
 
     def capture(*args)
@@ -61,7 +61,7 @@ module Spree
     end
 
     def record_response(response, payment)
-      payment.create_braspag_creditcard_transaction!({
+      payment.create_creditcard_transaction!({
                                           transaction_id: response[:transaction_id],
                                           amount: response[:amount],
                                           number: response[:number],

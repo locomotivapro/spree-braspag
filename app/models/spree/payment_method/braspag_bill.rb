@@ -56,7 +56,7 @@ module Spree
     end
 
     def record_response(response, payment)
-      payment.create_braspag_bill_transaction!(amount: response[:amount],
+      payment.create_bill_transaction!(amount: response[:amount],
                                               expiration_date: response[:expiration_date],
                                               message: response[:message],
                                               number: response[:number],
