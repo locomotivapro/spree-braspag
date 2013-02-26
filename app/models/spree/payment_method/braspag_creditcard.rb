@@ -10,7 +10,7 @@ module Spree
     end
 
     def payment_source_class
-      BraspagSourcecard
+      Spree::BraspagCreditcard
     end
 
     def capture(*args)

@@ -1,10 +1,9 @@
-class CreateSpreeBraspagSourcecards < ActiveRecord::Migration
+class CreateSpreeBraspagCreditcards < ActiveRecord::Migration
   def change
-    create_table :spree_braspag_sourcecards do |t|
+    create_table :spree_braspag_creditcards do |t|
       t.string :holder
       t.string :expiration
       t.string :number_payments
-      t.string :type_payment
       t.string :payment_method
 
       t.timestamps

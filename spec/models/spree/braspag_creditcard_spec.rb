@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe Spree::BraspagSourcecard do
+describe Spree::BraspagCreditcard do
 
   let(:valid_attributes) { {number: '0000000000000001', month: '1', year: '2015', security_code: '123', holder: 'Walter Bishop', number_payments: 1, payment_method: "Visa"} }
 
@@ -12,11 +12,11 @@ describe Spree::BraspagSourcecard do
     Rails.stub(:env => ActiveSupport::StringInquirer.new(environment))
   end
 
-  let(:credit_card) { Spree::BraspagSourcecard.new }
+  let(:credit_card) { Spree::BraspagCreditcard.new }
 
   context "create" do
     it "should format expiration" do
-      card = Spree::BraspagSourcecard.new(valid_attributes)
+      card = Spree::BraspagCreditcard.new(valid_attributes)
       card.expiration.should be_nil
       card.save
       card.expiration.should eq "01/15"
@@ -74,7 +74,7 @@ describe Spree::BraspagSourcecard do
       credit_card.save!
     end
 
-    let!(:persisted_card) { Spree::BraspagSourcecard.find(credit_card.id) }
+    let!(:persisted_card) { Spree::BraspagCreditcard.find(credit_card.id) }
 
     it "should not actually store the number" do
       persisted_card.number.should be_blank

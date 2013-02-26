@@ -1,6 +1,6 @@
 module Spree
-  class BraspagSourcecard < ActiveRecord::Base
-    attr_accessible :expiration, :holder, :number_payments, :payment_method, :type_payment, :number, :month, :year, :security_code
+  class BraspagCreditcard < ActiveRecord::Base
+    attr_accessible :expiration, :holder, :number_payments, :payment_method, :number, :month, :year, :security_code
 
     attr_accessor :number, :month, :year, :security_code
 
@@ -12,13 +12,6 @@ module Spree
     validates :payment_method, inclusion: { in: %w(Amex Visa Mastercard Diners Hipercard)}, :on => :create
 
     before_save :format_expiration, :set_payment_method
-
-    after_validation :log_info
-
-
-    def log_info
-      logger.info "ERRORSSRRS => #{errors.to_a}"
-    end
 
     def can_capture?(payment)
       ['checkout', 'pending'].include?(payment.state)
