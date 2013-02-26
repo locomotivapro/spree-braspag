@@ -1,7 +1,7 @@
 Spree::Payment::Processing.module_eval do
 
   def process!
-    if payment_method && payment_method.source_required? && !payment_method.kind_of?(Spree::BraspagGateway)
+    if payment_method && payment_method.source_required? && !payment_method.kind_of?(Spree::PaymentMethod::BraspagCreditcard)
       if source
         if !processing?
           if Spree::Config[:auto_capture]
@@ -16,7 +16,7 @@ Spree::Payment::Processing.module_eval do
     elsif payment_method && payment_method.kind_of?(Spree::PaymentMethod::BraspagBill)
       started_processing!
       braspag_gateway_action(order, :generate_bill, :pend)
-    elsif payment_method && payment_method.kind_of?(Spree::BraspagGateway)
+    elsif payment_method && payment_method.kind_of?(Spree::PaymentMethod::BraspagCreditcard)
       started_processing!
       braspag_creditcard_action(:authorize, :pend)
     end

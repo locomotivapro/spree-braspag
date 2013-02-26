@@ -20,7 +20,7 @@ module SpreeBraspag
     initializer "spree_braspag.register.payment_methods" do |app|
       app.config.spree.payment_methods += [
                                             Spree::PaymentMethod::BraspagBill,
-                                            Spree::BraspagGateway
+                                            Spree::PaymentMethod::BraspagCreditcard
                                           ]
     end
 

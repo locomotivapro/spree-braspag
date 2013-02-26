@@ -39,8 +39,7 @@ describe Spree::Payment do
 
     context "#process! a BraspagGateway" do
       let(:gateway) do
-        gateway = Spree::BraspagGateway.new({:environment => 'test', :active => true}, :without_protection => true)
-        # gateway.stub :source_required => false
+        gateway = Spree::PaymentMethod::BraspagCreditcard.new({:environment => 'test', :active => true}, :without_protection => true)
         gateway
       end
 
@@ -60,6 +59,18 @@ describe Spree::Payment do
         payment.process!
       end
 
+    end
+
+    context "associations" do
+      let(:payment) { Spree::Payment.new }
+
+      it "should have a braspag_bill" do
+        payment.braspag_bill_transaction.should_not raise_error ActiveRecord::StatementInvalid
+      end
+
+      it "should have a braspag_creditcard" do
+        payment.braspag_creditcard_transaction.should_not raise_error ActiveRecord::StatementInvalid
+      end
     end
 
   end

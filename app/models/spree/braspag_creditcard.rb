@@ -11,7 +11,7 @@ module Spree
 
     validates :payment_method, inclusion: { in: %w(Amex Visa Mastercard Diners Hipercard)}, :on => :create
 
-    before_save :format_expiration, :translate_payment_method
+    before_save :format_expiration, :set_payment_method
 
     def can_capture?(payment)
       ['checkout', 'pending'].include?(payment.state)
@@ -29,13 +29,13 @@ module Spree
       self.expiration = "#{m}/#{y}"
     end
 
-    def translate_payment_method
+    def set_payment_method
       code = case payment_method
       when "Amex"; "amex_2p"
-      when "cielo_noauth_visa"; "71"
-      when "redecard"; "20"
-      when "redecard"; "20"
-      when "hipercard_sitef"; "62"
+      when "Visa"; "cielo_noauth_visa"
+      when "Mastercard"; "redecard"
+      when "Diners"; "redecard"
+      when "Hipercard"; "hipercard_sitef"
       end
 
       self.payment_method = code

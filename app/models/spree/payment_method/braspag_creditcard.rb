@@ -1,5 +1,5 @@
 module Spree
-  class BraspagGateway < PaymentMethod
+  class PaymentMethod::BraspagCreditcard < PaymentMethod
     preference :max_parcels, :integer, default: 1
     preference :minimun_parcel_value, :float, default: 10.0
 

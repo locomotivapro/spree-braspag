@@ -86,26 +86,41 @@ describe Spree::BraspagCreditcard do
     end
   end
 
-  # context "#set_card_type" do
-  #   before :each do
-  #     stub_rails_env("production")
-  #     credit_card.attributes = valid_attributes
-  #   end
+  context "#set_payment_method" do
+    before :each do
+      credit_card.attributes = valid_attributes
+    end
 
-  #   it "stores the credit card type after validation" do
-  #     credit_card.number = "6011000990139424"
-  #     credit_card.save
-  #     credit_card.spree_cc_type.should == "discover"
-  #   end
+    it "match Visa to cielo_noauth_visa" do
+      credit_card.payment_method = "Visa"
+      credit_card.save
+      credit_card.payment_method.should == 'cielo_noauth_visa'
+    end
 
-  #   it "does not overwrite the credit card type when loaded and saved" do
-  #     credit_card.number = "5105105105105100"
-  #     credit_card.save
-  #     credit_card.number = "XXXXXXXXXXXX5100"
-  #     credit_card.save
-  #     credit_card.spree_cc_type.should == "master"
-  #   end
-  # end
+    it "match Amex to amex_2p" do
+      credit_card.payment_method = "Amex"
+      credit_card.save
+      credit_card.payment_method.should == 'amex_2p'
+    end
+
+    it "match Mastercard to redecard" do
+      credit_card.payment_method = "Mastercard"
+      credit_card.save
+      credit_card.payment_method.should == 'redecard'
+    end
+
+    it "match Diners to redecard" do
+      credit_card.payment_method = "Diners"
+      credit_card.save
+      credit_card.payment_method.should == 'redecard'
+    end
+
+    it "match Hipercard to hipercard_sitef" do
+      credit_card.payment_method = "Hipercard"
+      credit_card.save
+      credit_card.payment_method.should == 'hipercard_sitef'
+    end
+  end
 
   context "#number=" do
     it "should strip non-numeric characters from card input" do
