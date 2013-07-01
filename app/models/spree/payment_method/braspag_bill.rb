@@ -50,9 +50,27 @@ module Spree
                 :amount => payment.amount,
                 :payment_method => preferred_bank.to_sym,
                 :instructions => preferred_instructions,
-                :expiration_date => (Date.today + preferred_days_to_due.days).strftime("%d/%m/%y")
+                :expiration_date => (Date.today + preferred_days_to_due.days).strftime("%d/%m/%y"),
+                :customer_name => customer_name(order),
+                :customer_id_number => customer_document(order)
             }
       params
+    end
+
+    def customer_name(order)
+      order.bill_addrress.full_name
+    rescue
+      ''
+    end
+
+    def customer_document(order)
+      if order.user.present?
+        order.user.account_type == 'personal' ? order.user.cpf : order.user.cnpj
+      else
+        order.document
+      end
+    rescue
+      ''
     end
 
     def record_response(response, payment)
