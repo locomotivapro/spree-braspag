@@ -13,6 +13,10 @@ module Spree
 
     before_save :format_expiration, :set_payment_method
 
+    def actions
+      %w{capture void}
+    end
+
     def can_capture?(payment)
       ['checkout', 'pending'].include?(payment.state)
     end

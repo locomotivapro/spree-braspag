@@ -5,34 +5,22 @@ module Spree
 
     attr_accessible :preferred_max_parcels, :preferred_minimun_parcel_value
 
-    def actions
-      %w{capture void}
-    end
-
     def payment_source_class
       Spree::BraspagCreditcard
-    end
-
-    def can_capture?(payment)
-      ['checkout', 'pending'].include?(payment.state)
-    end
-
-    def can_void?(payment)
-      payment.state != 'void'
-    end
-
-    def capture(*args)
-      ActiveMerchant::Billing::Response.new(true, "", {}, {})
-    end
-
-    def void(*args)
-      ActiveMerchant::Billing::Response.new(true, "", {}, {})
     end
 
     def authorize(source, order, payment)
       approval_response = Braspag::CreditCard.authorize(build_params(source, order, payment))
       record_response approval_response, payment
       response_to_spree(success?(approval_response), approval_response)
+    end
+
+    def capture(*args)
+      ActiveMerchant::Billing::Response.new(true, "#{args}", {}, {})
+    end
+
+    def void!(*args)
+      ActiveMerchant::Billing::Response.new(true, "#{args}", {}, {})
     end
 
     def success?(response)
