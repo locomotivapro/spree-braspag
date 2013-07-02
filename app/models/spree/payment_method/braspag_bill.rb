@@ -58,7 +58,7 @@ module Spree
     end
 
     def customer_name(order)
-      order.bill_addrress.full_name
+      order.bill_address.full_name
     rescue
       ''
     end
