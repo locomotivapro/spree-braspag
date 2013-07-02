@@ -52,7 +52,7 @@ module Spree
                 :instructions => preferred_instructions,
                 :expiration_date => (Date.today + preferred_days_to_due.days).strftime("%d/%m/%y"),
                 :customer_name => customer_name(order),
-                :customer_id_number => customer_document(order)
+                :customer_id => customer_document(order)
             }
       params
     end
