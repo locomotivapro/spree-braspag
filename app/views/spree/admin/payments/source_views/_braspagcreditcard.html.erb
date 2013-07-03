@@ -1,2 +1,9 @@
 <h3>Dados do pagamento</h3>
 <% transaction = payment.creditcard_transaction %>
+
+<p>Quantia: <%= transaction.amount %></p>
+<p>Id Transação: <%= transaction.transaction_id %></p>
+<p>Mensagem: <%= transaction.message %></p>
+<p>Número: <%= transaction.number %></p>
+<p>Código de retorno: <%= transaction.return_code %></p>
+<p>Status: <%= transaction.status %></p>

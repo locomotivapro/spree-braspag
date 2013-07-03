@@ -3,6 +3,8 @@ SpreeBraspag
 
 This gem integrates spree ecommerce with brazilian Braspag gateway.
 
+Gem developed for [Via Lumina - Artigos Religiosos](http://www.vialumina.com.br/) by [Locomotiva.pro](http://locomotiva.pro/)
+
 
 Installing
 =======
