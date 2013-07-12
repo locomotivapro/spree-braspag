@@ -19,7 +19,7 @@ module Spree
       ActiveMerchant::Billing::Response.new(true, "#{args}", {}, {})
     end
 
-    def void!(*args)
+    def void(*args)
       ActiveMerchant::Billing::Response.new(true, "#{args}", {}, {})
     end
 

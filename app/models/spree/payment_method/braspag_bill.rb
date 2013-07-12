@@ -47,6 +47,7 @@ module Spree
     def build_params(order, payment)
       params = {
                 :order_id => order.number,
+                :number => order.number,
                 :amount => payment.amount,
                 :payment_method => preferred_bank.to_sym,
                 :instructions => preferred_instructions,
