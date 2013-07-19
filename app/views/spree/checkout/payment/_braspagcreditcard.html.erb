@@ -15,6 +15,7 @@
   <%= radio_button_tag "#{param_prefix}[payment_method]", "Mastercard" %> Mastercard<br>
   <%= radio_button_tag "#{param_prefix}[payment_method]", "Diners" %> Diners<br>
   <%= radio_button_tag "#{param_prefix}[payment_method]", "Hipercard" %> Hipercard<br>
+  <%= radio_button_tag "#{param_prefix}[payment_method]", "Elo" %> Elo<br>
 </p>
 
 <p class="field" data-hook="card_number">
@@ -46,5 +47,5 @@
   <%= label_tag nil, t(:security_code) %><br />
   <%= text_field_tag "#{param_prefix}[security_code]", '', options_hash.merge(:id => 'security_code', :class => 'required', :size => 5) %>
   <span class="required">*</span>
-  <%= link_to "(#{t(:whats_this)})", spree.content_path('cvv'), :target => '_blank', :onclick => "window.open(this.href,'cvv_info','left=20,top=20,width=500,height=500,toolbar=0,resizable=0,scrollbars=1');return false", "data-hook" => "cvv_link" %>
+  <%#= link_to "(#{t(:whats_this)})", spree.content_path('cvv'), :target => '_blank', :onclick => "window.open(this.href,'cvv_info','left=20,top=20,width=500,height=500,toolbar=0,resizable=0,scrollbars=1');return false", "data-hook" => "cvv_link" %>
 </p>

@@ -16,4 +16,17 @@ $(document).ready(function() {
             }
         }
     });
+
+  $('#payment_amount').bind('change', function() {
+  $.ajax({
+    url: $('#payment_parcels_number').data('url'),
+    type: 'GET',
+    data: { amount: $('#payment_amount').val(),
+            prefix: $('#payment_parcels_number select').attr('id'),
+            minimun: $('#payment_parcels_number').data('minimun-parcel'),
+            parcels: $('#payment_parcels_number').data('max-parcels')
+          }
+    });
+  });
+
 });

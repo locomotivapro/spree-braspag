@@ -1,4 +1,7 @@
 Spree::Admin::PaymentsController.class_eval do
+  skip_before_filter :load_payment, :load_data, only: :get_parcels
+
+  respond_to :js
 
   def create
     # Overriding the core method because route is wrong when there is a payment error
@@ -31,6 +34,9 @@ Spree::Admin::PaymentsController.class_eval do
       flash[:error] = "#{e.message}"
       respond_with(@payment) { |format| format.html { redirect_to new_admin_order_payment_path(@order) } }
     end
+  end
+
+  def get_parcels
   end
 
 end

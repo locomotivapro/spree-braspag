@@ -17,6 +17,7 @@
   <%= radio_button_tag "#{param_prefix}[payment_method]", "Mastercard" %> Mastercard<br>
   <%= radio_button_tag "#{param_prefix}[payment_method]", "Diners" %> Diners<br>
   <%= radio_button_tag "#{param_prefix}[payment_method]", "Hipercard" %> Hipercard<br>
+  <%= radio_button_tag "#{param_prefix}[payment_method]", "Elo" %> Elo<br>
 </p>
 
 <p class="field" data-hook="card_number">
@@ -39,10 +40,9 @@
   <span class="required">*</span>
 </p>
 
-<p class="field" data-hook="parcels">
-  <%= label_tag nil, t(:parcels) %>
-  <%= select_tag "#{param_prefix}[number_payments]", options_for_select(payment_parcels_array(@order.total, payment_method.preferred(:max_parcels), payment_method.preferred(:minimun_parcel_value)))  %>
-</p>
+<div class="field" data-hook="parcels" id="payment_parcels_number" data-minimun-parcel="<%=payment_method.preferred(:minimun_parcel_value)%>" data-max-parcels="<%=payment_method.preferred(:max_parcels)%>" data-url="<%= spree.get_parcels_admin_order_payments_path(@order)%>">
+  <%= render 'spree/admin/payments/source_forms/parcels', param_prefix: param_prefix, total: @order.total, parcels: payment_method.preferred(:max_parcels),  minimun_parcel: payment_method.preferred(:minimun_parcel_value) %>
+</div>
 
 <p class="field" data-hook="card_code">
   <%= label_tag nil, t(:security_code) %><br />

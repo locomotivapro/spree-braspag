@@ -7,3 +7,8 @@
 <p>Número: <%= transaction.number %></p>
 <p>Código de retorno: <%= transaction.return_code %></p>
 <p>Status: <%= transaction.status %></p>
+
+<h3>Forma de pagamento</h3>
+
+<p>Cartão: <%= payment.source.payment_method %></p>
+<p>Parcelas: <%= payment.source.number_payments %></p>

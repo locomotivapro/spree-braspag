@@ -9,7 +9,7 @@ module Spree
     validates :month, :year,:number_payments, :numericality => { :only_integer => true }, :on => :create
     validates :number, :security_code, :holder, :presence => true, :on => :create
 
-    validates :payment_method, inclusion: { in: %w(Amex Visa Mastercard Diners Hipercard)}, :on => :create
+    validates :payment_method, inclusion: { in: %w(Amex Visa Mastercard Diners Hipercard Elo)}, :on => :create
 
     before_save :format_expiration, :set_payment_method
 
@@ -40,6 +40,7 @@ module Spree
       when "Mastercard"; "redecard"
       when "Diners"; "redecard"
       when "Hipercard"; "hipercard_sitef"
+      when "Elo"; "cielo_noauth_elo"
       end
 
       self.payment_method = code
