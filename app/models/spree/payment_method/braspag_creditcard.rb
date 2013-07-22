@@ -57,7 +57,7 @@ module Spree
     end
 
     def record_response(response, payment)
-      transaction_msg = response[:transaction_id].empty? ? 'vazio' : response[:transaction_id]
+      transaction_msg = response[:transaction_id].nil? ? 'vazio' : response[:transaction_id]
       payment.create_creditcard_transaction!({
                                           transaction_id: transaction_msg,
                                           amount: response[:amount],
