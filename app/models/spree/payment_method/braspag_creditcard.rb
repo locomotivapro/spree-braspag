@@ -11,6 +11,7 @@ module Spree
 
     def authorize(source, order, payment)
       approval_response = Braspag::CreditCard.authorize(build_params(source, order, payment))
+      logger.info "APPROVAL RESPONSE ==== #{approval_response}"
       record_response approval_response, payment
       response_to_spree(success?(approval_response), approval_response)
     end
@@ -57,6 +58,8 @@ module Spree
     end
 
     def record_response(response, payment)
+      logger.info "RESPONSE ===== #{response}"
+      logger.info "Payment ===== #{payment}"
       transaction_msg = response[:transaction_id].nil? ? 'vazio' : response[:transaction_id]
       payment.create_creditcard_transaction!({
                                           transaction_id: transaction_msg,
