@@ -31,7 +31,7 @@ module Spree
 
     def build_params(source, order, payment)
       {
-        :order_id => source.number,
+        :order_id => order.number,
         :customer_name => order.name,
         :amount => payment.amount,
         :payment_method => payment_method_code(source),
@@ -57,13 +57,10 @@ module Spree
     end
 
     def record_response(response, payment)
-      transaction_msg = response[:transaction_id].nil? ? 'vazio' : response[:transaction_id]
-      amount = response[:amount].nil? ? 0 : response[:amount]
-      number = response[:number].nil? ? 'vazio' : response[:number]
       payment.create_creditcard_transaction!({
-                                          transaction_id: transaction_msg,
+                                          transaction_id: response[:transaction_id],
                                           amount: amount,
-                                          number: number,
+                                          number: response[:number],
                                           return_code: response[:return_code],
                                           status: response[:status],
                                           message: response[:message]})
