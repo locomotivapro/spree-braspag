@@ -59,7 +59,7 @@ module Spree
     def record_response(response, payment)
       payment.create_creditcard_transaction!({
                                           transaction_id: response[:transaction_id],
-                                          amount: amount,
+                                          amount: response[:amount],
                                           number: response[:number],
                                           return_code: response[:return_code],
                                           status: response[:status],
