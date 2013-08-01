@@ -2,7 +2,7 @@
 Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.name        = 'spree_braspag'
-  s.version     = '1.1.10'
+  s.version     = '1.1.11'
   s.summary     = 'Gem for integration of spree and braspag payment gateways'
   s.description = 'Gem for integration of spree and braspag payment gateways'
   s.required_ruby_version = '>= 1.8.7'
