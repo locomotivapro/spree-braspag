@@ -17,8 +17,14 @@ Spree::Payment::Processing.module_eval do
       started_processing!
       braspag_gateway_action(order, :generate_bill, :pend)
     elsif payment_method && payment_method.kind_of?(Spree::PaymentMethod::BraspagCreditcard)
-      started_processing!
-      braspag_creditcard_action(:authorize, :pend)
+      if source
+        if !processing?
+          started_processing!
+          braspag_creditcard_action(:authorize, :pend)
+        end
+      else
+        raise Spree::Core::GatewayError.new(I18n.t(:payment_processing_failed))
+      end
     end
   end
 
