@@ -1,4 +1,4 @@
-require 'baby-braspag'
+require 'locomotiva-braspag'
 
 module Spree
   class PaymentMethod::BraspagBill < PaymentMethod
