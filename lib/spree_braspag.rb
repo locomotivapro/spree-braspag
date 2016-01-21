@@ -1,2 +1,1 @@
-require 'spree_core'
-require 'spree_braspag/engine'
+require 'spree/braspag'

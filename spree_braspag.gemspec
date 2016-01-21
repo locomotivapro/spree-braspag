@@ -1,8 +1,12 @@
 # encoding: UTF-8
+lib = File.expand_path('../lib', __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+require 'spree/braspag/version'
+
 Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.name        = 'spree_braspag'
-  s.version     = '1.1.14'
+  s.version     = Spree::Braspag::VERSION
   s.summary     = 'Gem for integration of spree and braspag payment gateways'
   s.description = 'Gem for integration of spree and braspag payment gateways'
   s.required_ruby_version = '>= 1.8.7'
@@ -16,8 +20,8 @@ Gem::Specification.new do |s|
   s.require_path = 'lib'
   s.requirements << 'none'
 
-  s.add_dependency 'spree_core', '~> 1.2.4'
-  s.add_dependency 'locomotiva-braspag', '~> 0.1.6'
+  s.add_runtime_dependency 'spree_core', '~> 3.1.0.beta'
+  s.add_runtime_dependency 'locomotiva-braspag', '~> 0.1.6'
 
   s.add_development_dependency 'capybara', '1.0.1'
   s.add_development_dependency 'guard-rspec'
