@@ -1,4 +1,4 @@
-Spree::CheckoutHelper.class_eval do
+Spree::FrontendHelper.class_eval do
 
   def payment_parcels_array(amount, max_parcels, minimun_value)
     for parcel in 1..max_parcels

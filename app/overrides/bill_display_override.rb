@@ -1,3 +1,4 @@
+=begin
 Deface::Override.new(:virtual_path => "spree/shared/_order_details",
                      :name => "add_bill_link",
                      :insert_bottom => ".payment-info",
@@ -8,3 +9,4 @@ Deface::Override.new(:virtual_path => "spree/admin/payments/_list",
                      :insert_bottom => "tr[data-hook=payments_row]//td[2]") do
                        "<%= link_to('   Abrir boleto', payment.bill_transaction.url, target: '_blank') if payment.payment_method.kind_of?(Spree::PaymentMethod::BraspagBill)%>"
                      end
+=end

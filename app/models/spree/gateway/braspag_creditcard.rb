@@ -3,65 +3,102 @@ module Spree
     preference :max_parcels, :integer, default: 1
     preference :minimun_parcel_value, :float, default: 10.0
 
-    def payment_source_class
-      Spree::BraspagCreditcard
+    def payment_profiles_supported?
+      false
     end
 
-    def authorize(source, order, payment)
-      approval_response = Braspag::CreditCard.authorize(build_params(source, order, payment))
-      record_response approval_response, payment
-      response_to_spree(success?(approval_response), approval_response)
+    def method_type
+      'braspag_creditcard'
     end
 
-    def capture(*args)
-      ActiveMerchant::Billing::Response.new(true, "#{args}", {}, {})
+    def provider_class
+      ::Braspag
     end
 
-    def void(*args)
-      ActiveMerchant::Billing::Response.new(true, "#{args}", {}, {})
+    def provider
+      ::Braspag::CreditCard
     end
+
+    def auto_capture?
+      false
+    end
+
+    def authorize(amount, source, gateway_options={})
+      params = build_params(amount, source, gateway_options)
+      response = provider.authorize(params)
+
+      def response.success?
+        self[:status] == "0" || self[:status] == "1"
+      end
+
+      logger.info 'MOM +++++++'
+      logger.info response
+
+      if success?(response)
+        def response.authorization; self[:transaction_id]; end
+        def response.avs_result; {}; end
+        def response.cvv_result; {}; end
+      else
+        def response.to_s
+          "#{self[:status]} - #{self[:message]}"
+        end
+      end
+
+      response
+    end
+
+    #def capture(*args)
+    #ActiveMerchant::Billing::Response.new(true, "#{args}", {}, {})
+    #end
+
+    #def cancel(*args)
+    #ActiveMerchant::Billing::Response.new(true, "#{args}", {}, {})
+    #end
 
     def success?(response)
       response[:status] == "0" || response[:status] == "1"
     end
 
     private
-
-    def build_params(source, order, payment)
+    def build_params(amount, source, options)
       {
-        :order_id => order.number,
-        :customer_name => order.name,
-        :amount => payment.amount,
+        :order_id => options[:order_id],
+        :customer_name => options[:billing_address][:name],
+        :amount => amount,
         :payment_method => payment_method_code(source),
-        :holder => source.holder,
+        :holder => source.name,
         :card_number => source.number,
-        :expiration => source.expiration,
-        :security_code => source.security_code,
-        :number_payments => source.number_payments,
+        :expiration => expiration(source),
+        :security_code => source.verification_value,
+        :number_payments => source.installments,
         :type => payment_type(source)
       }
     end
+
+    def expiration(source)
+      m = source.month.to_s.length == 1 ? "0#{source.month}" : source.month
+      y = source.year.to_s[2..3]
+       "#{m}/#{y}"
+    end
+
+    def set_payment_method(brand)
+      case brand
+      when "Amex"; "amex_2p"
+      when "Visa"; "cielo_noauth_visa"
+      when "Mastercard"; "redecard"
+      when "Diners"; "redecard"
+      when "Hipercard"; "hipercard_sitef"
+      when "Elo"; "cielo_noauth_elo"
+      end
+    end
+
 
     def payment_method_code(source)
       Rails.env.production? ? source.payment_method.to_sym : :braspag
     end
 
     def payment_type(source)
-      source.number_payments == '1' ? '0' : '1'
-    end
-
-    def response_to_spree(response_value, response)
-      ActiveMerchant::Billing::Response.new(response_value, response)
-    end
-
-    def record_response(response, payment)
-      payment.create_creditcard_transaction!({
-        transaction_id: response[:transaction_id],
-        amount: response[:amount],
-        number: response[:number],
-        return_code: response[:return_code],
-        status: response[:status],
-        message: response[:message]})
+      source.installments == 1 ? '0' : '1'
     end
 
   end
