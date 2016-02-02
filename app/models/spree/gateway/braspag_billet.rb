@@ -80,7 +80,7 @@ module Spree
       params = {
         :order_id => gateway_options[:order_id],
         #:number => order_number,
-        :amount => amount,
+        :amount => Spree::Braspag::Utils.format_amount(amount),
         :payment_method => preferred_bank.to_sym,
         :instructions => preferred_instructions,
         :expiration_date => (Date.today + preferred_days_to_due.days).strftime("%d/%m/%y"),

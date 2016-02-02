@@ -31,9 +31,6 @@ module Spree
         self[:status] == "0" || self[:status] == "1"
       end
 
-      logger.info 'MOM +++++++'
-      logger.info response
-
       if success?(response)
         def response.authorization; self[:transaction_id]; end
         def response.avs_result; {}; end
@@ -47,24 +44,12 @@ module Spree
       response
     end
 
-    #def capture(*args)
-    #ActiveMerchant::Billing::Response.new(true, "#{args}", {}, {})
-    #end
-
-    #def cancel(*args)
-    #ActiveMerchant::Billing::Response.new(true, "#{args}", {}, {})
-    #end
-
-    def success?(response)
-      response[:status] == "0" || response[:status] == "1"
-    end
-
     private
     def build_params(amount, source, options)
       {
         :order_id => options[:order_id],
         :customer_name => options[:billing_address][:name],
-        :amount => amount,
+        :amount => Spree::Braspag::Utils.format_amount(amount),
         :payment_method => payment_method_code(source),
         :holder => source.name,
         :card_number => source.number,
