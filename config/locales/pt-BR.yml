@@ -1,0 +1,11 @@
+pt-BR:
+  generic_creditcard_error: Problemas na transação, por favor tente novamente ou entre em contato
+  spree:
+    holder: Nome no cartão
+  braspag:
+    creditcard_error_2: Não autorizada pelo cartão, por favor confira os dados inseridos
+    creditcard_error_78: Não autorizada, cartão bloqueado
+    creditcard_error_70: Não autorizada, problemas com o cartão. Por favor confira os dados do cartão
+    creditcard_error_57: Não autorizada, cartão expirado
+    creditcard_error_99: O tempo limite expirou, por favor tente novamente
+    billet_instructions: Instrucoes para pagamento do boleto

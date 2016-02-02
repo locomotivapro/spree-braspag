@@ -40,7 +40,7 @@ module Spree
         def response.cvv_result; {}; end
       else
         def response.to_s
-          "#{self[:status]} - #{self[:message]}"
+          I18n.t "braspag.creditcard_error_#{self[:return_code]}", default: :generic_creditcard_error
         end
       end
 

@@ -1,0 +1,9 @@
+<% source = payment.source %>
+
+<h3>Dados do boleto</h3>
+
+<p>
+  Valor: <%= number_to_currency payment.amount %>
+  <%= link_to 'Baixar boleto', source.billet_url, target: '_blank', class: 'btn btn-default' %>
+</p>
+

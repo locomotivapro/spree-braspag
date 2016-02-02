@@ -1,4 +1,0 @@
-<!-- $('#payment_parcels_number select').html("<%=j render('spree/admin/payments/source_forms/parcels', param_prefix: params[:prefix].gsub('_number_payments',''), total: params[:amount].to_f, parcels: params[:parcels].to_i,  minimun_parcel: params[:minimun].to_f) %>"); -->
-$('#payment_parcels_number select').html("<%=j options_for_select(payment_parcels_array(params[:amount].to_f, params[:parcels].to_i, params[:minimun].to_f)) %>");
-
-

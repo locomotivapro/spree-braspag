@@ -10,13 +10,10 @@ module Spree
         g.test_framework :rspec
       end
 
-      initializer 'spree.braspag.preferences', before: :load_config_initializers do |app|
-        Spree::Braspag::Config = Spree::BraspagConfiguration.new
-      end
-
       def self.activate
         source_attrs = Spree::PermittedAttributes.source_attributes
         source_attrs << :installments unless  source_attrs.include?(:installments)
+        source_attrs << :billet_url unless  source_attrs.include?(:billet_url)
 
         Dir.glob(File.join(File.dirname(__FILE__), '../../app/**/*_decorator*.rb')) do |c|
           Rails.configuration.cache_classes ? require(c) : load(c)
