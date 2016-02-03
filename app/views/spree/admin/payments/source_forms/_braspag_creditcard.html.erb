@@ -1,43 +1,46 @@
 <% param_prefix = "payment_source[#{payment_method.id}]" %>
 <% options_hash = Rails.env.production? ? {:autocomplete => 'off'} : {} %>
-<% 
-  def payment_parcels_array(amount, max_parcels, minimun_value)
-    for parcel in 1..max_parcels
-      parcel_value = (amount / parcel).to_f
-      break if minimun_value.to_f > parcel_value && parcel != 1
-      (final_array ||=[]) << ["#{parcel}x de #{number_to_currency parcel_value}","#{parcel}"]
-    end
-    final_array
-  end
-%>
 
 <div class="well">
   <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-7">
+      <p class="field" data-hook="payment_method">
+      <%= label_tag nil, 'Bandeira do cartão' %><br />
+      <label class="checkbox-inline" for="">
+        <%= radio_button_tag "#{param_prefix}[cc_type]", "Amex" %> Amex
+      </label>
+      <label class="checkbox-inline" for="">
+        <%= radio_button_tag "#{param_prefix}[cc_type]", "Visa" %> Visa
+      </label>
+      <label class="checkbox-inline" for="">
+        <%= radio_button_tag "#{param_prefix}[cc_type]", "Mastercard" %> Mastercard
+      </label>
+      <label class="checkbox-inline" for="">
+        <%= radio_button_tag "#{param_prefix}[cc_type]", "Diners" %> Diners
+      </label>
+      <label class="checkbox-inline" for="">
+        <%= radio_button_tag "#{param_prefix}[cc_type]", "Elo" %> Elo
+      </label>
+      </p>
+    </div>
+    <div class="col-md-5">
       <%= image_tag 'creditcards/creditcard.gif', :id => 'creditcard-image' %>
+    </div>
+
+  </div>
+  <div class="row">
+    <div class="col-md-6">
       <p class="field">
       <label for=""><%= Spree.t(:holder) %></label><span class="required">*</span>
       <%= text_field_tag "#{param_prefix}[name]", '', options_hash.merge(:id => 'holder', :class => 'required form-control', :size => 40, :maxlength => 100) %>
       </p>
     </div>
-
     <div class="col-md-6">
-      <p class="field" data-hook="payment_method">
-      <%= label_tag nil, t(:payment_method) %><br />
-      <%= radio_button_tag "#{param_prefix}[cc_type]", "Amex" %> Amex<br>
-      <%= radio_button_tag "#{param_prefix}[cc_type]", "Visa" %> Visa<br>
-      <%= radio_button_tag "#{param_prefix}[cc_type]", "Mastercard" %> Mastercard<br>
-      <%= radio_button_tag "#{param_prefix}[cc_type]", "Diners" %> Diners<br>
-      <%= radio_button_tag "#{param_prefix}[cc_type]", "Elo" %> Elo<br>
-      </p>
-    </div>
-
-    <div class="col-md-4">
       <p class="field" data-hook="card_number">
-      <%= label_tag nil, t(:card_number) %><br />
+      <%= label_tag nil, t(:card_number) %>
+      <span class="required">*</span>
       <% options_hash = Rails.env.production? ? {:autocomplete => 'off'} : {} %>
       <%= text_field_tag "#{param_prefix}[number]", '', options_hash.merge(:id => 'card_number', :class => 'required form-control', :size => 19, :maxlength => 19) %>
-      <span class="required">*</span>
       &nbsp;
       <span id="card_type" style="display:none;">
         ( <span id="looks_like" ><%= t(:card_type_is) %> <span id="type"></span></span>
@@ -47,7 +50,7 @@
       </p>
     </div>
 
-    <div class="col-md-2">
+    <div class="col-md-3">
       <p class="field" data-hook="card_code">
       <%= label_tag nil, t(:security_code) %>
       <span class="required">*</span><br>
@@ -56,19 +59,29 @@
       </p>
     </div>
 
-    <div class="col-md-3">
+    <div class="col-md-2">
       <p class="field" data-hook="card_expiration">
-      <%= label_tag nil, t(:expiration) %><br />
-      <%= select_month(Date.today, { :prefix => param_prefix, :field_name => 'month', :use_month_numbers => true }, :class => 'required') %>
-      <%= select_year(Date.today, { :prefix => param_prefix, :field_name => 'year', :start_year => Date.today.year, :end_year => Date.today.year + 15 }, :class => 'required') %>
+      <%= label_tag nil, 'Validade (mês)' %>
       <span class="required">*</span>
+      <%= select_month(Date.today, { :prefix => param_prefix, :field_name => 'month', :use_month_numbers => true }, :class => 'form-control required') %>
       </p>
     </div>
 
-    <div class="col-md-3">
+    <div class="col-md-2">
+      <p class="field" data-hook="card_expiration">
+      <%= label_tag nil, 'Validade (ano)' %>
+      <span class="required">*</span>
+      <%= select_year(Date.today, { :prefix => param_prefix, :field_name => 'year', :start_year => Date.today.year, :end_year => Date.today.year + 15 }, :class => 'form-control required') %>
+      </p>
+    </div>
+
+
+    <div class="col-md-4">
       <p class="field" data-hook="parcels">
-      <%= label_tag nil, t(:parcels) %><br>
-      <%= select_tag "#{param_prefix}[installments]", options_for_select(payment_parcels_array(@order.total, payment_method.preferences[:max_parcels], payment_method.preferences[:minimun_parcel_value]))  %>
+      <%= label_tag nil, t(:parcels) %>
+      <span class="required">*</span><br>
+      <% installments_array = Spree::Braspag::Utils.payment_parcels_array(@order.total, payment_method.preferences[:max_parcels], payment_method.preferences[:minimun_parcel_value], self) %>
+      <%= select_tag "#{param_prefix}[installments]", options_for_select(installments_array), class: 'form-control required'  %>
       </p>
     </div>
 

@@ -23,6 +23,32 @@ module Spree
       false
     end
 
+    def capture(amount, response_code, gateway_options = {})
+      #value = { currency: gateway_options[:currency], value: amount }
+      #response = provider.capture_payment(response_code, value)
+
+      #if response.success?
+        #def response.authorization; nil; end
+        #def response.avs_result; {}; end
+        #def response.cvv_result; {}; end
+      #else
+        ## todo confirm the error response will always have these two methods
+        #def response.to_s
+          #"#{result_code} - #{refusal_reason}"
+        #end
+      #end
+      #response
+
+      ActiveMerchant::Billing::Response.new(true, '', {}, :test => false, :authorization => '')
+    end
+
+    def void(response_code, source, gateway_options = {})
+      #response = provider.cancel_payment(response_code)
+      #response
+
+      ActiveMerchant::Billing::Response.new(true, '', {}, :test => false, :authorization => '')
+    end
+
     def authorize(amount, source, gateway_options={})
       params = build_params(amount, source, gateway_options)
       response = provider.authorize(params)
@@ -31,7 +57,7 @@ module Spree
         self[:status] == "0" || self[:status] == "1"
       end
 
-      if success?(response)
+      if response.success?
         def response.authorization; self[:transaction_id]; end
         def response.avs_result; {}; end
         def response.cvv_result; {}; end

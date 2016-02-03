@@ -27,12 +27,6 @@ module Spree
         ]
       end
 
-      initializer "spree_braspag.assets.precompile", :group => :all do |app|
-        app.config.assets.precompile += %w[
-          only_numbers.js
-        ]
-      end
-
       config.to_prepare &method(:activate).to_proc
     end
   end

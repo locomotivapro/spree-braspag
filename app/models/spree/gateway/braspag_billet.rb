@@ -24,23 +24,30 @@ module Spree
       false
     end
 
-    def actions
-      %w{capture void authorize}
+    def capture(amount, response_code, gateway_options = {})
+      #value = { currency: gateway_options[:currency], value: amount }
+      #response = provider.capture_payment(response_code, value)
+
+      #if response.success?
+        #def response.authorization; nil; end
+        #def response.avs_result; {}; end
+        #def response.cvv_result; {}; end
+      #else
+        ## todo confirm the error response will always have these two methods
+        #def response.to_s
+          #"#{result_code} - #{refusal_reason}"
+        #end
+      #end
+      #response
+
+      ActiveMerchant::Billing::Response.new(true, '', {}, :test => false, :authorization => '')
     end
 
-    def cancel(response_code)
-      payment = Spree::Payment.find_by response_code: response_code
-      payment.void
-    rescue
-      true
-    end
+    def void(response_code, source, gateway_options = {})
+      #response = provider.cancel_payment(response_code)
+      #response
 
-    def can_void?(payment)
-      !payment.void?
-    end
-
-    def can_capture?(payment)
-      payment.pending? || payment.checkout?
+      ActiveMerchant::Billing::Response.new(true, '', {}, :test => false, :authorization => '')
     end
 
     def method_type
@@ -62,7 +69,7 @@ module Spree
         source.update_attributes(billet_url: response[:url])
         def response.authorization; self[:number]; end
         def response.avs_result; {}; end
-        def response.cvv_result; { 'code' => self[:return_code] }; end
+        def response.cvv_result; {}; end
       else
         def response.to_s
           "#{self[:message]}"
