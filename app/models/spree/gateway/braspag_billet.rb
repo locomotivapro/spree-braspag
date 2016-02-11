@@ -82,7 +82,6 @@ module Spree
     private
 
     def build_params(amount, source, gateway_options)
-      binding.pry
       order_number = gateway_options[:order_id].split('-').first
       amount = amount / 100.0
 
