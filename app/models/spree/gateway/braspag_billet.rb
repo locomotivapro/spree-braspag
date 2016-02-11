@@ -82,12 +82,14 @@ module Spree
     private
 
     def build_params(amount, source, gateway_options)
+      binding.pry
       order_number = gateway_options[:order_id].split('-').first
+      amount = amount / 100.0
 
       params = {
         :order_id => gateway_options[:order_id],
         #:number => order_number,
-        :amount => Spree::Braspag::Utils.format_amount(amount),
+        :amount => amount,
         :payment_method => preferred_bank.to_sym,
         :instructions => preferred_instructions,
         :expiration_date => (Date.today + preferred_days_to_due.days).strftime("%d/%m/%y"),

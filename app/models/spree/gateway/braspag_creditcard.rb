@@ -72,10 +72,11 @@ module Spree
 
     private
     def build_params(amount, source, options)
+      amount = amount / 100.0
       {
         :order_id => options[:order_id],
         :customer_name => options[:billing_address][:name],
-        :amount => Spree::Braspag::Utils.format_amount(amount),
+        :amount => amount,
         :payment_method => payment_method_code(source),
         :holder => source.name,
         :card_number => source.number,
