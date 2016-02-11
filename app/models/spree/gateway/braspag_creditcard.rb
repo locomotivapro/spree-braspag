@@ -106,7 +106,7 @@ module Spree
 
 
     def payment_method_code(source)
-      Rails.env.production? ? source.payment_method.to_sym : :braspag
+      ::Braspag::Connection.instance.homologation? ? :braspag : source.payment_method.to_sym
     end
 
     def payment_type(source)
