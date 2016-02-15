@@ -94,13 +94,12 @@ module Spree
     end
 
     def set_payment_method(brand)
-      case brand
-      when "Amex"; "amex_2p"
-      when "Visa"; "cielo_noauth_visa"
-      when "Mastercard"; "redecard"
-      when "Diners"; "redecard"
-      when "Hipercard"; "hipercard_sitef"
-      when "Elo"; "cielo_noauth_elo"
+      case brand.downcase
+      when "amex", "american_express" then "amex_2p"
+      when "visa" then "cielo_noauth_visa"
+      when "master", "mastercard", "maestro", "diners", "diners_club" then "redecard"
+      when "hipercard" then "hipercard_sitef"
+      when "elo" then "cielo_noauth_elo"
       end
     end
 
