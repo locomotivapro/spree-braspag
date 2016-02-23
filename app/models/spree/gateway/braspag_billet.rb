@@ -100,7 +100,7 @@ module Spree
     end
 
     def customer_document(user_id, order_number)
-      user = Spree::User.find user_id
+      user = Spree::User.where(id: user_id).first
 
       if user
         user.account_type == 'personal' ? user.cpf : user.cnpj
