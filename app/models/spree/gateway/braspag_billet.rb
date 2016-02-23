@@ -105,7 +105,7 @@ module Spree
       if user
         user.account_type == 'personal' ? user.cpf : user.cnpj
       else
-        order = Spree::Order.find_by :number
+        order = Spree::Order.find_by(number: order_number)
         order.document
       end
     rescue
