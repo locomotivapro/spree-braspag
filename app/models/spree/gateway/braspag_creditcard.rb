@@ -105,7 +105,7 @@ module Spree
 
 
     def payment_method_code(source)
-      ::Braspag::Connection.instance.homologation? ? :braspag : source.payment_method.to_sym
+      ::Braspag::Connection.instance.homologation? ? :braspag : set_payment_method(source.brand).to_sym
     end
 
     def payment_type(source)
