@@ -88,7 +88,7 @@ module Spree
 
       params = {
         :order_id => gateway_options[:order_id],
-        #:number => order_number,
+        :number => order_number,
         :amount => amount,
         :payment_method => preferred_bank.to_sym,
         :instructions => preferred_instructions,
