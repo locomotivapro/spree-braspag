@@ -3,14 +3,14 @@
 
 <div class="well">
   <div class="row">
-    <div class="col-md-7">
+    <div class="col-md-9">
       <p class="field" data-hook="payment_method">
       <%= label_tag nil, 'Bandeira do cartão' %><br />
       <label class="checkbox-inline" for="">
-        <%= radio_button_tag "#{param_prefix}[cc_type]", "Amex" %> Amex
+        <%= radio_button_tag "#{param_prefix}[cc_type]", "Visa", true %> Visa
       </label>
       <label class="checkbox-inline" for="">
-        <%= radio_button_tag "#{param_prefix}[cc_type]", "Visa" %> Visa
+        <%= radio_button_tag "#{param_prefix}[cc_type]", "Amex" %> Amex
       </label>
       <label class="checkbox-inline" for="">
         <%= radio_button_tag "#{param_prefix}[cc_type]", "Mastercard" %> Mastercard
@@ -26,8 +26,8 @@
       </label>
       </p>
     </div>
-    <div class="col-md-5">
-      <%= image_tag 'creditcards/creditcard.gif', :id => 'creditcard-image' %>
+    <div class="col-md-3">
+      <%= image_tag 'creditcards/creditcard.gif', :id => 'creditcard-image', class: 'img img-responsive' %>
     </div>
 
   </div>
