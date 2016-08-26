@@ -83,7 +83,7 @@ module Spree
     private
 
     def build_params(amount, source, gateway_options)
-      order_number = gateway_options[:order_id].split('-').first.gsub(/\D/,'')
+      order_number = gateway_options[:order_id].split('-').first
       amount = amount / 100.0
 
       params = {
@@ -94,7 +94,7 @@ module Spree
         :instructions => preferred_instructions,
         :expiration_date => (Date.today + preferred_days_to_due.days).strftime("%d/%m/%y"),
         :customer_name => gateway_options[:billing_address][:name],
-        :customer_id => customer_document(gateway_options[:customer_id], order_number)
+        :customer_id => customer_document(gateway_options[:customer_id], order_number.gsub(/\D/,''))
       }
       params
     end
