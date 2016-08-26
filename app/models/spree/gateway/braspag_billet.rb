@@ -88,13 +88,13 @@ module Spree
 
       params = {
         :order_id => gateway_options[:order_id],
-        :number => order_number,
+        :number => order_number.gsub(/\D/,''),
         :amount => amount,
         :payment_method => preferred_bank.to_sym,
         :instructions => preferred_instructions,
         :expiration_date => (Date.today + preferred_days_to_due.days).strftime("%d/%m/%y"),
         :customer_name => gateway_options[:billing_address][:name],
-        :customer_id => customer_document(gateway_options[:customer_id], order_number.gsub(/\D/,''))
+        :customer_id => customer_document(gateway_options[:customer_id], order_number)
       }
       params
     end
