@@ -1,8 +1,12 @@
+require 'securerandom'
+
 module Spree
   class Gateway::BraspagBillet < Gateway
     preference :days_to_due, :integer, :default => 3
     preference :instructions, :string, :default => I18n.t('braspag.billet_instructions')
     preference :bank, :string
+    preference :assignor, :string
+    preference :billet_provider, :string
 
     def source_required?
       true
@@ -13,11 +17,11 @@ module Spree
     end
 
     def provider_class
-      ::Braspag
+      ::BraspagRest
     end
 
     def provider
-      ::Braspag::Bill
+      ::BraspagRest::Sale
     end
 
     def auto_capture?
@@ -59,44 +63,53 @@ module Spree
     end
 
     def authorize(amount, source, gateway_options={})
-      response = provider.generate(build_params(amount, source, gateway_options))
+      params = build_params(amount, source, gateway_options)
+      sale_request = provider.new(params)
 
-      def response.success?
-        self[:status] == '0'
-      end
-
-      if response.success?
-        source.update_attributes(billet_url: response[:url])
-        def response.authorization; self[:number]; end
-        def response.avs_result; {}; end
-        def response.cvv_result; {}; end
+      if sale_request.save
+        url = sale_request.payment.printable_page_url
+        source.update_attributes(billet_url: url)
+        def sale_request.success?;  true;  end
+        def sale_request.authorization; self.payment.id; end
+        def sale_request.avs_result; {}; end
+        def sale_request.cvv_result; {}; end
       else
-        source.payment.failure
-        def response.to_s
+        def sale_request.success?;  false;  end
+        def sale_request.to_s
           "#{self[:message]}"
         end
       end
 
-      response
+      sale_request
     end
 
     private
 
     def build_params(amount, source, gateway_options)
       order_number = gateway_options[:order_id].split('-').first.gsub(/\D/,'')
-      amount = amount / 100.0
+      #amount = amount / 100.0
 
-      params = {
-        :order_id => gateway_options[:order_id],
-        :number => order_number,
-        :amount => amount,
-        :payment_method => preferred_bank.to_sym,
-        :instructions => preferred_instructions,
-        :expiration_date => (Date.today + preferred_days_to_due.days).strftime("%d/%m/%y"),
-        :customer_name => gateway_options[:billing_address][:name],
-        :customer_id => customer_document(gateway_options[:customer_id], order_number)
+      {
+        order_id: gateway_options[:order_id],
+        request_id: SecureRandom.uuid,
+        customer: {
+          name: gateway_options[:billing_address][:name],
+        },
+        payment: {
+          type: 'Boleto',
+          amount: amount,
+          provider: billet_provider,
+          boleto_number: order_number,
+          assignor: preferred_assignor,
+          instructions: preferred_instructions,
+          expiration_date: (Date.today + preferred_days_to_due.days).strftime("%Y-%m-%d"),
+          identification: customer_document(gateway_options[:customer_id], order_number)
+        }
       }
-      params
+    end
+
+    def billet_provider
+      ::BraspagRest.config.environment.to_s == 'development' ? 'Simulado' : preferred_billet_provider
     end
 
     def customer_document(user_id, order_number)

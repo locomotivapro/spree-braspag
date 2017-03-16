@@ -1,3 +1,5 @@
+require 'securerandom'
+
 module Spree
   class Gateway::BraspagCreditcard < Gateway
     preference :max_parcels, :integer, default: 1
@@ -12,11 +14,11 @@ module Spree
     end
 
     def provider_class
-      ::Braspag
+      ::BraspagRest
     end
 
     def provider
-      ::Braspag::CreditCard
+      ::BraspagRest::Sale
     end
 
     def auto_capture?
@@ -51,45 +53,50 @@ module Spree
 
     def authorize(amount, source, gateway_options={})
       params = build_params(amount, source, gateway_options)
-      response = provider.authorize(params)
+      sale_request = provider.new(params)
 
-      def response.success?
-        self[:status] == "0" || self[:status] == "1"
-      end
-
-      if response.success?
-        def response.authorization; self[:transaction_id]; end
-        def response.avs_result; {}; end
-        def response.cvv_result; {}; end
+      if sale_request.save
+        def sale_request.success?;  true;  end
+        def sale_request.authorization; self.payment.id; end
+        def sale_request.avs_result; {}; end
+        def sale_request.cvv_result; {}; end
       else
-        def response.to_s
-          I18n.t "braspag.creditcard_error_#{self[:return_code]}", default: :generic_creditcard_error
+        def sale_request.success?;  false;  end
+        def sale_request.to_s
+          I18n.t "braspag.creditcard_error_#{self.payment.status}", default: :generic_creditcard_error
         end
       end
 
-      response
+      sale_request
     end
 
     private
     def build_params(amount, source, options)
-      amount = amount / 100.0
       {
         :order_id => options[:order_id],
-        :customer_name => options[:billing_address][:name],
-        :amount => amount,
-        :payment_method => payment_method_code(source),
-        :holder => source.name,
-        :card_number => source.number,
-        :expiration => expiration(source),
-        :security_code => source.verification_value,
-        :number_payments => source.installments,
-        :type => payment_type(source)
+        :request_id => SecureRandom.uuid,
+        :customer => {
+          :name => options[:billing_address][:name],
+        },
+        :payment => {
+          :type => 'CreditCard',
+          :amount => amount,
+          :provider => payment_method_code(source),
+          :installments => source.installments,
+          :credit_card => {
+            :holder => source.name,
+            :number => source.number,
+            :expiration_date => expiration(source),
+            :security_code => source.verification_value,
+            :brand => payment_type(source)
+          }
+        }
       }
     end
 
     def expiration(source)
       m = source.month.to_s.length == 1 ? "0#{source.month}" : source.month
-      y = source.year.to_s[2..3]
+      y = source.year
        "#{m}/#{y}"
     end
 
@@ -105,7 +112,7 @@ module Spree
 
 
     def payment_method_code(source)
-      ::Braspag::Connection.instance.homologation? ? :braspag : set_payment_method(source.brand).to_sym
+      ::BraspagRest.config.environment.to_s == 'development' ? 'Simulado' : set_payment_method(source.brand).to_sym
     end
 
     def payment_type(source)
