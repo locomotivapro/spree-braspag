@@ -112,7 +112,7 @@ module Spree
 
 
     def payment_method_code(source)
-      ::BraspagRest.config.environment.to_s == 'development' ? 'Simulado' : set_payment_method(source.brand).to_sym
+      ::BraspagRest.config.environment.to_s == 'production' ? set_payment_method(source.brand).to_sym : 'Simulado'
     end
 
     def payment_type(source)

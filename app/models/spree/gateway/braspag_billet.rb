@@ -108,7 +108,7 @@ module Spree
     end
 
     def billet_provider
-      ::BraspagRest.config.environment.to_s == 'development' ? 'Simulado' : preferred_billet_provider
+      ::BraspagRest.config.environment.to_s == 'production' ? preferred_billet_provider : 'Simulado'
     end
 
     def customer_document(user_id, order_number)
