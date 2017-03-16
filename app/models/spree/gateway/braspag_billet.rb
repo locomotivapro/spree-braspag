@@ -87,7 +87,6 @@ module Spree
 
     def build_params(amount, source, gateway_options)
       order_number = gateway_options[:order_id].split('-').first.gsub(/\D/,'')
-      #amount = amount / 100.0
 
       {
         order_id: gateway_options[:order_id],
