@@ -81,6 +81,7 @@ module Spree
         :payment => {
           :type => 'CreditCard',
           :amount => amount,
+          :capture => true,
           :provider => payment_method_code(source),
           :installments => source.installments,
           :credit_card => {
