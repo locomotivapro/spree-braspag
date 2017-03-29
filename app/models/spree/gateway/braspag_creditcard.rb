@@ -89,7 +89,7 @@ module Spree
             :number => source.number,
             :expiration_date => expiration(source),
             :security_code => source.verification_value,
-            :brand => payment_type(source)
+            :brand => source.brand
           }
         }
       }
