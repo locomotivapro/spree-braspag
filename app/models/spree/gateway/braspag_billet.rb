@@ -86,7 +86,7 @@ module Spree
     private
 
     def build_params(amount, source, gateway_options)
-      order_number = gateway_options[:order_id].split('-').first.gsub(/\D/,'')
+      order_number = gateway_options[:order_id].split('-').first
 
       {
         order_id: gateway_options[:order_id],
@@ -98,7 +98,7 @@ module Spree
           type: 'Boleto',
           amount: amount,
           provider: billet_provider,
-          boleto_number: order_number,
+          boleto_number: order_number.gsub(/\D/,''),
           assignor: preferred_assignor,
           instructions: preferred_instructions,
           expiration_date: (Date.today + preferred_days_to_due.days).strftime("%Y-%m-%d"),
