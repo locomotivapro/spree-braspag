@@ -56,10 +56,17 @@ module Spree
       sale_request = provider.new(params)
 
       if sale_request.save
-        def sale_request.success?;  true;  end
-        def sale_request.authorization; self.payment.id; end
-        def sale_request.avs_result; {}; end
-        def sale_request.cvv_result; {}; end
+        if sale_request.payment.reason_code == 0
+          def sale_request.success?;  true;  end
+          def sale_request.authorization; self.payment.id; end
+          def sale_request.avs_result; {}; end
+          def sale_request.cvv_result; {}; end
+        else
+          def sale_request.success?;  false;  end
+          def sale_request.to_s
+            I18n.t "braspag.creditcard_error_#{self.payment.status}", default: :generic_creditcard_error
+          end
+        end
       else
         def sale_request.success?;  false;  end
         def sale_request.to_s
