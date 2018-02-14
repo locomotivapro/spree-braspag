@@ -30,14 +30,14 @@ module Spree
       #response = provider.capture_payment(response_code, value)
 
       #if response.success?
-        #def response.authorization; nil; end
-        #def response.avs_result; {}; end
-        #def response.cvv_result; {}; end
+      #def response.authorization; nil; end
+      #def response.avs_result; {}; end
+      #def response.cvv_result; {}; end
       #else
-        ## todo confirm the error response will always have these two methods
-        #def response.to_s
-          #"#{result_code} - #{refusal_reason}"
-        #end
+      ## todo confirm the error response will always have these two methods
+      #def response.to_s
+      #"#{result_code} - #{refusal_reason}"
+      #end
       #end
       #response
 
@@ -56,7 +56,7 @@ module Spree
       sale_request = provider.new(params)
 
       if sale_request.save
-        if sale_request.payment.reason_code == 0
+        if success_response?(sale_request)
           def sale_request.success?;  true;  end
           def sale_request.authorization; self.payment.id; end
           def sale_request.avs_result; {}; end
@@ -77,35 +77,39 @@ module Spree
       sale_request
     end
 
+    def success_response?(sale)
+      sale.payment && sale.payment.status && [1, 2].include?(sale.payment.status.to_i)
+    end
+
     private
     def build_params(amount, source, options)
       {
         :order_id => options[:order_id],
         :request_id => SecureRandom.uuid,
         :customer => {
-          :name => options[:billing_address][:name],
-        },
-        :payment => {
-          :type => 'CreditCard',
-          :amount => amount,
-          :capture => true,
-          :provider => payment_method_code(source),
-          :installments => source.installments,
-          :credit_card => {
-            :holder => source.name,
-            :number => source.number,
-            :expiration_date => expiration(source),
-            :security_code => source.verification_value,
-            :brand => source.brand
-          }
-        }
+        :name => options[:billing_address][:name],
+      },
+      :payment => {
+        :type => 'CreditCard',
+        :amount => amount,
+        :capture => true,
+        :provider => payment_method_code(source),
+        :installments => source.installments,
+        :credit_card => {
+        :holder => source.name,
+        :number => source.number,
+        :expiration_date => expiration(source),
+        :security_code => source.verification_value,
+        :brand => source.brand
+      }
+      }
       }
     end
 
     def expiration(source)
       m = source.month.to_s.length == 1 ? "0#{source.month}" : source.month
       y = source.year
-       "#{m}/#{y}"
+      "#{m}/#{y}"
     end
 
     def set_payment_method(brand)
