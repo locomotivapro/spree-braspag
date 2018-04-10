@@ -87,12 +87,25 @@ module Spree
 
     def build_params(amount, source, gateway_options)
       order_number = gateway_options[:order_id].split('-').first
+      address = gateway_options[:billing_address]
 
       {
         order_id: gateway_options[:order_id],
         request_id: SecureRandom.uuid,
         customer: {
           name: gateway_options[:billing_address][:name],
+          identity: customer_document(gateway_options[:customer_id], order_number),
+          identity_type: customer_document_type(gateway_options[:customer_id], order_number),
+          address: {
+            street: address[:address1],
+            number: address[:number],
+            complement: address[:address2],
+            zip_code: address[:zip],
+            city: address[:city],
+            state: address[:state],
+            country: address[:country],
+            district: address[:district]
+          }
         },
         payment: {
           type: 'Boleto',
@@ -112,16 +125,37 @@ module Spree
     end
 
     def customer_document(user_id, order_number)
-      user = Spree::User.where(id: user_id).first
+      user = load_user(user_id)
 
       if user
         user.account_type == 'personal' ? user.cpf : user.cnpj
       else
-        order = Spree::Order.find_by(number: order_number)
+        order = load_order(order_number)
         order.document
       end
     rescue
       ''
+    end
+
+    def customer_document_type(user_id, order_number)
+      user = load_user(user_id)
+
+      if user
+        user.account_type == 'personal' ? 'CPF' : 'CNPJ'
+      else
+        order = load_order(order_number)
+        order.document.size > 11 ? 'CNPJ' : 'CPF'
+      end
+    rescue
+      'CPF'
+    end
+
+    def load_user(user_id)
+      @user ||= Spree::User.where(id: user_id).first
+    end
+
+    def load_order(order_number)
+      @order ||= Spree::Order.find_by(number: order_number)
     end
 
   end
